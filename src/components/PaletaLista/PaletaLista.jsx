@@ -38,7 +38,15 @@ function PaletaLista() {
     <div className="PaletaLista">
       {paletas.map((paleta, index) => (
         //adicionamos a nossa key
-        <PaletaListaItem key={`PaletaListaItem-${index}`}/>
+        <PaletaListaItem
+		key={`PaletaListaItem-${index}`}
+		paleta={paleta}
+		quantidadeSelecionada={paletaSelecionada[index]}
+		index={index}
+    onAdd={index => adicionarItem(index)}
+		onRemove={index => removerItem(index)}
+       />
+
       ))}
     </div>
   );

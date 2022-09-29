@@ -1,11 +1,20 @@
 import "./PaletaListaItem.css"
 
-function PaletaListaItem(){
+function PaletaListaItem({ paleta, quantidadeSelecionada, index, onRemove, onAdd}){
 
+
+/* PROPRIEDADES PARAMETRIZÁVEIS
+    FILHO PARA PAI
     //DADOS MOCADOS DE EXEMPLO
     const removerItem = (i) => console.log('remover' + i);
 	const adicionarItem = (i) => console.log('adicionar' + i);
-	const paletaSelecionada = [0];// simulando o state vazio
+*/
+
+
+    /*
+
+ PAI PARA FILHO
+    const paletaSelecionada = [0];// simulando o state vazio
 	const index = 0;
 	const paleta = {
 		titulo: "Açaí com Leite Condensado",
@@ -18,6 +27,7 @@ function PaletaListaItem(){
 		possuiRecheio: true,
 
     }
+*/
 
     //RENDERIZAÇÃO CONDICIONAL
   // função possui 2 parãmetros o primeiro é a condição e o segundo o index da paleta selecionada
@@ -26,19 +36,19 @@ function PaletaListaItem(){
   Boolean(canRender) && (
     <span className="PaletaListaItem__badge">
       {" "}
-      {paletaSelecionada[index]}{" "}
+      {quantidadeSelecionada}{" "}
     </span>
   );
 
   const removeButton = (canRender, index) =>
-    Boolean(canRender) && (<button className="Acoes__remover" onClick={() => removerItem(index)}>remover</button>);
+    Boolean(canRender) && (<button className="Acoes__remover" onClick={() => onRemove(index)}>remover</button>);
   // o primeiro é o index da paleta selecionada que se refere ao canRnder que dendo valor vira TRUE
   //{badgeCounter(paletaSelecionada[index], index)}
 
 
     return (
         <div className="PaletaListaItem" >
-          {badgeCounter(paletaSelecionada[index], index)}
+          {badgeCounter(quantidadeSelecionada, index)}
           <div>
             <div className="PaletaListaItem__titulo"> {paleta.titulo} </div>
             <div className="PaletaListaItem__preco">
@@ -52,13 +62,13 @@ function PaletaListaItem(){
             <div className="PaletaListaItem__acoes Acoes">
               <button
                 className={`Acoes__adicionar ${
-                  !paletaSelecionada[index] && "Acoes__adicionar--preencher"
+                  !quantidadeSelecionada && "Acoes__adicionar--preencher"
                 }`}
-                onClick={() => adicionarItem(index)}
+                onClick={() => onAdd(index)}
               >
                 adicionar
               </button>
-              {removeButton(paletaSelecionada[index], index)}
+              {removeButton(quantidadeSelecionada, index)}
             </div>
           </div>
           <img
