@@ -1,5 +1,6 @@
 import "./PaletaLista.css";
 import { paletas } from "mocks/paletas.js";// funcionol o arquivo jsconfg eu não precisei colocar o ../../
+import PaletaListaItem from "../PaletaListaItem/PaletaListaItem.jsx";
 import { useState } from "react";
 
 function PaletaLista() {
@@ -27,64 +28,17 @@ function PaletaLista() {
 
 
 
-  //RENDERIZAÇÃO CONDICIONAL
-  // função possui 2 parãmetros o primeiro é a condição e o segundo o index da paleta selecionada
-  // ele renderiza o SPAN
-  const badgeCounter = (canRender, index) =>
-    Boolean(canRender) && (
-      <span className="PaletaListaItem__badge">
-        {" "}
-        {paletaSelecionada[index]}{" "}
-      </span>
-    );
-
-
-
-
-    const removeButton = (canRender, index) =>
-    Boolean(canRender) && (<button className="Acoes__remover" onClick={() => removerItem(index)}>remover</button>);
   
 
+    
 
 
-
-  // o primeiro é o index da paleta selecionada que se refere ao canRnder que dendo valor vira TRUE
-  //{badgeCounter(paletaSelecionada[index], index)}
 
   return (
     <div className="PaletaLista">
       {paletas.map((paleta, index) => (
         //adicionamos a nossa key
-        <div className="PaletaListaItem" key={`PaletaListaItem-${index}`}>
-          {badgeCounter(paletaSelecionada[index], index)}
-          <div>
-            <div className="PaletaListaItem__titulo"> {paleta.titulo} </div>
-            <div className="PaletaListaItem__preco">
-              {" "}
-              R$ {paleta.preco.toFixed(2)}{" "}
-            </div>
-            <div className="PaletaListaItem__descricao">
-              {" "}
-              {paleta.descricao}{" "}
-            </div>
-            <div className="PaletaListaItem__acoes Acoes">
-              <button
-                className={`Acoes__adicionar ${
-                  !paletaSelecionada[index] && "Acoes__adicionar--preencher"
-                }`}
-                onClick={() => adicionarItem(index)}
-              >
-                adicionar
-              </button>
-              {removeButton(paletaSelecionada[index], index)}
-            </div>
-          </div>
-          <img
-            className="PaletaListaItem__foto"
-            src={paleta.foto}
-            alt={`Paleta de ${paleta.sabor}`}
-          />
-        </div>
+        <PaletaListaItem key={`PaletaListaItem-${index}`}/>
       ))}
     </div>
   );
