@@ -1,7 +1,7 @@
 import React from "react";// biblioteca react 
 import ReactDOM from "react-dom";// biblioteca reactDOM e por meio dela que vamos renderizar os compoentes na tela
-import Home from "./components/Home.jsx"
-import "./index.css"
+import Home from "./views/Home/Home.jsx"
+import  "./assets/style/main.css"
 //o método render que existe dentro da biblioteca reactDOM
 ReactDOM.render(
     //React.StrictMode emite alertas caso tenha algo de errado

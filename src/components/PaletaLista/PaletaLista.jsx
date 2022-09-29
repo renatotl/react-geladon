@@ -1,5 +1,5 @@
 import "./PaletaLista.css";
-import { paletas } from "../../mocks/paletas.js";
+import { paletas } from "mocks/paletas.js";// funcionol o arquivo jsconfg eu não precisei colocar o ../../
 import { useState } from "react";
 
 function PaletaLista() {

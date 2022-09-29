@@ -4,5 +4,3 @@
     },
     "include": ["src"]
   }
-
-  // não vamos precisa colocar ../ para arquivos acima

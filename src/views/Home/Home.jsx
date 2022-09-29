@@ -1,7 +1,7 @@
 import "./Home.css";
-import PaletaLista from "./PaletaLista/PaletaLista.jsx";
-import sacola from "../assets/icons/sacola.svg";
-import logo from "../assets/icons/logo.svg";
+import PaletaLista from "../../components/PaletaLista/PaletaLista.jsx";
+import sacola from "../../assets/icons/sacola.svg";
+import logo from "../../assets/icons/logo.svg";
 
 function Home() {
   return (
