@@ -1,9 +1,17 @@
 import "./PaletaLista.css";
-import { paletas } from "mocks/paletas.js";// funcionol o arquivo jsconfg eu não precisei colocar o ../../
+//import { paletas } from "mocks/paletas.js";// funcionol o arquivo jsconfg eu não precisei colocar o ../../
 import PaletaListaItem from "../PaletaListaItem/PaletaListaItem.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { PaletaService } from "services/PaletaService";
+
 
 function PaletaLista() {
+
+
+  const [paletas, setPaletas] = useState([]);
+
+
+
   //        valor atual        func que altera a outra         valor inicial um obj vazio
   const [paletaSelecionada, setPaletaSelecionada] = useState({});
 
@@ -25,13 +33,22 @@ function PaletaLista() {
 }
 
 
+const getLista = async () => {
+  const response = await PaletaService.getLista();
+  setPaletas(response);
+};
 
 
-
-  
-
+  // algum acoisa tem que invocar este função
+  // quando o componente for renderizado ele invoca a função
+  //o primeiro é uma função e o segundo um array vazio para evitar o loop
+useEffect(() => {
+  getLista();
+}, []);
     
-
+/*
+Observe que como segundo parâmetro passamos um array vazio e é importante informar este parâmetro ao useEffect pois sem ele a aplicação entraria em looping infinito, dado que sempre que há uma atualização em um hook de useState que faz alterações no template/ view será acionado o hook de useEffect, que neste caso fará a chamada da requisição de dados para a API e assim por diante
+*/
 
 
   return (
