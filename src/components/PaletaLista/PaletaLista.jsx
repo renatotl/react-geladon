@@ -3,6 +3,7 @@ import "./PaletaLista.css";
 import PaletaListaItem from "../PaletaListaItem/PaletaListaItem.jsx";
 import { useState, useEffect } from "react";
 import { PaletaService } from "services/PaletaService";
+import PaletaDetalhesModal from "components/PaletaDetalhesModal/PaletaDetalhesModal";
 
 
 function PaletaLista() {
@@ -14,6 +15,26 @@ function PaletaLista() {
 
   //        valor atual        func que altera a outra         valor inicial um obj vazio
   const [paletaSelecionada, setPaletaSelecionada] = useState({});
+
+
+  const [paletaModal, setPaletaModal] = useState(false);
+
+
+
+
+  const paleta = {
+    titulo: "Açaí com Leite Condensado",
+    descricao:
+      "Quam vulputate dignissim suspendisse in est ante in nibh mauris.",
+    foto: "assets/images/acai-com-leite-condensado.png",
+    preco: 10.0,
+    sabor: "Açaí",
+    recheio: "Leite Condensado",
+    possuiRecheio: true,
+  }
+
+
+
 
   // esse parametro vem do button
   const adicionarItem = (paletaIndex) => {
@@ -36,6 +57,11 @@ function PaletaLista() {
 const getLista = async () => {
   const response = await PaletaService.getLista();
   setPaletas(response);
+};
+
+const getPaletaById = async (paletaId) => {
+  const response = await PaletaService.getById(paletaId);
+  setPaletaModal(response);
 };
 
 
@@ -62,9 +88,13 @@ Observe que como segundo parâmetro passamos um array vazio e é importante info
 		index={index}
     onAdd={index => adicionarItem(index)}
 		onRemove={index => removerItem(index)}
+    clickItem={(paletaId) => getPaletaById(paletaId)}
+
        />
 
       ))}
+{paletaModal && <PaletaDetalhesModal paleta={paletaModal} closeModal={() => setPaletaModal(false)} />}
+
     </div>
   );
 }

@@ -68,3 +68,14 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+Estrutura e funcionamento de assets
+As imagens e assets que ficam disponibilizados dentro da pasta src fazem parte da aplicação e necessitam ser compilados previamente à sua execução.
+Quando escolhemos criar o arquivo paletas.js em src/mocks, consideramos que as informações fariam parte da aplicação e os endereços de imagem das paletas seriam fixos, diferente do que acontece no formato de espera da resposta e entrega dos dados pela API que é executada após a renderização e compilação da aplicação, trazendo endereços dinâmicos.
+Desta maneira não há como acessar em tempo de execução arquivos com endereços no contexto fonte da aplicação, mas é possível se eles estiverem disponibilizados de forma pública.
+A real necessidade do projeto é conter as imagens dinâmicas fora da aplicação, ou seja, dados mutáveis e manipuláveis por fontes externas devem ser armazenados e distribuídos em serviços externos, porém para fins didáticos utilizaremos as imagens dentro do projeto, de forma a simular que as URL's devolvidas pela API no atributo foto.
+Mas como fazer isso? Simples, apenas moveremos a pasta imagens para uma nova pasta chamada assets que criaremos dentro da pasta public na raíz do projeto:
+
+
