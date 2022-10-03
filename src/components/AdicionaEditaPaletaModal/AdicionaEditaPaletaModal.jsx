@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import Modal from "components/Modal/Modal";
-import "./AdicionaPaletaModal.css";
+import "./AdicionaEditaPaletaModal.css";
 import { PaletaService } from "services/PaletaService.js";
 
-function AdicionaPaletaModal({ closeModal, onCreatePaleta}) {
+function AdicionaEditaPaletaModal({ closeModal, onCreatePaleta}) {
   // nossas propriedades que o cliente vai digitar
   const form = {
     preco: "",
@@ -162,7 +162,7 @@ function AdicionaPaletaModal({ closeModal, onCreatePaleta}) {
   );
 }
 
-export default AdicionaPaletaModal;
+export default AdicionaEditaPaletaModal;
 
 
 /* Para integrar os sistemas, precisamos enviar os dados do formulário para o endpoint de criação através do service chamando o método create.

@@ -66,12 +66,23 @@
   .Paleta {
     background: none;
     border: none;
+    transform: translateY(-3px);
+    border-radius: 10px;
+    transition: all .5s;
+    padding: 0
   }
 
   .Paleta__icone {
     cursor: pointer;
+    transform: translateY(3px);
+
   }
 
+
+  .Paleta--ativa {
+    background: rgba(148, 0, 211);
+  }
+  
   @media (max-width: 1220px) {
     .Header {
       max-width: 720px;

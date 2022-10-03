@@ -1,26 +1,18 @@
 import "./PaletaLista.css";
 //import { paletas } from "mocks/paletas.js";// funcionol o arquivo jsconfg eu não precisei colocar o ../../
 import PaletaListaItem from "../PaletaListaItem/PaletaListaItem.jsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PaletaService } from "services/PaletaService";
 import PaletaDetalhesModal from "components/PaletaDetalhesModal/PaletaDetalhesModal";
+import { ActionMode } from "constants/index";
 
-
-function PaletaLista({ paletaCriada }) {
-
-
+function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta }) {
   const [paletas, setPaletas] = useState([]);
-
-
 
   //        valor atual        func que altera a outra         valor inicial um obj vazio
   const [paletaSelecionada, setPaletaSelecionada] = useState({});
 
-
   const [paletaModal, setPaletaModal] = useState(false);
-
-
-
 
   const paleta = {
     titulo: "Açaí com Leite Condensado",
@@ -31,10 +23,7 @@ function PaletaLista({ paletaCriada }) {
     sabor: "Açaí",
     recheio: "Leite Condensado",
     possuiRecheio: true,
-  }
-
-
-
+  };
 
   // esse parametro vem do button
   const adicionarItem = (paletaIndex) => {
@@ -46,77 +35,91 @@ function PaletaLista({ paletaCriada }) {
     setPaletaSelecionada({ ...paletaSelecionada, ...paleta });
   };
 
-
-
   const removerItem = (paletaIndex) => {
-    const paleta = { [paletaIndex]: Number(paletaSelecionada[paletaIndex] || 0) -1 }
-    setPaletaSelecionada({...paletaSelecionada, ...paleta});
-}
+    const paleta = {
+      [paletaIndex]: Number(paletaSelecionada[paletaIndex] || 0) - 1,
+    };
+    setPaletaSelecionada({ ...paletaSelecionada, ...paleta });
+  };
+
+  const getLista = async () => {
+    const response = await PaletaService.getLista();
+    setPaletas(response);
+  };
+
+  const getPaletaById = async (paletaId) => {
+    const response = await PaletaService.getById(paletaId);
+
+    const mapper = {
+      [ActionMode.NORMAL]: () => setPaletaModal(response),
+      [ActionMode.ATUALIZAR]: () => updatePaleta(response),
+      [ActionMode.DELETAR]: () => deletePaleta(response),
+    };
+
+    mapper[mode]();
+  };
+
+/*
+Note também que há a importação e o uso do hook useCallback. Ele é necessário para indicarmos quando há um hook de useState sendo referenciado dentro de um hook de useEffect
+*/
 
 
-const getLista = async () => {
-  const response = await PaletaService.getLista();
-  setPaletas(response);
-};
-
-const getPaletaById = async (paletaId) => {
-  const response = await PaletaService.getById(paletaId);
-  setPaletaModal(response);
-};
 
 
+  const adicionaPaletaNaLista = useCallback(
+    (paleta) => {
+      const lista = [...paletas, paleta];
+      setPaletas(lista);
+    },
+    [paletas]
+  );
 
-
-const adicionaPaletaNaLista = (paleta) => {
-  const lista = [...paletas, paleta];
-  setPaletas(lista);
-};
-
-useEffect(() => {
-  if (paletaCriada) adicionaPaletaNaLista(paletaCriada);
-}, [paletaCriada]);
-
-
-
+  useEffect(() => {
+    if (
+      paletaCriada &&
+      !paletas.map(({ id }) => id).includes(paletaCriada.id)
+    ) {
+      adicionaPaletaNaLista(paletaCriada);
+    }
+  }, [adicionaPaletaNaLista, paletaCriada, paletas]);
 
   // algum acoisa tem que invocar este função
   // quando o componente for renderizado ele invoca a função
   //o primeiro é uma função e o segundo um array vazio para evitar o loop
-useEffect(() => {
-  getLista();
-}, []);
-    
-/*
+  useEffect(() => {
+    getLista();
+  }, []);
+
+  /*
 Observe que como segundo parâmetro passamos um array vazio e é importante informar este parâmetro ao useEffect pois sem ele a aplicação entraria em looping infinito, dado que sempre que há uma atualização em um hook de useState que faz alterações no template/ view será acionado o hook de useEffect, que neste caso fará a chamada da requisição de dados para a API e assim por diante
 */
-
 
   return (
     <div className="PaletaLista">
       {paletas.map((paleta, index) => (
         //adicionamos a nossa key
         <PaletaListaItem
-		key={`PaletaListaItem-${index}`}
-		paleta={paleta}
-		quantidadeSelecionada={paletaSelecionada[index]}
-		index={index}
-    onAdd={index => adicionarItem(index)}
-		onRemove={index => removerItem(index)}
-    clickItem={(paletaId) => getPaletaById(paletaId)}
-
-       />
-
+          mode={mode}
+          key={`PaletaListaItem-${index}`}
+          paleta={paleta}
+          quantidadeSelecionada={paletaSelecionada[index]}
+          index={index}
+          onAdd={(index) => adicionarItem(index)}
+          onRemove={(index) => removerItem(index)}
+          clickItem={(paletaId) => getPaletaById(paletaId)}
+        />
       ))}
-{paletaModal && <PaletaDetalhesModal paleta={paletaModal} closeModal={() => setPaletaModal(false)} />}
-
+      {paletaModal && (
+        <PaletaDetalhesModal
+          paleta={paletaModal}
+          closeModal={() => setPaletaModal(false)}
+        />
+      )}
     </div>
   );
 }
 
 export default PaletaLista;
-
-
-
 
 /*ESTILIZAÇÃO CONDICIONAL
 Acoes__adicionar indica a COR
@@ -128,8 +131,6 @@ className={`Acoes__adicionar ${
   !paletaSelecionada[index] && "Acoes__adicionar--preencher"
 }`}
 */
-
-
 
 /*
 o onClick quando o usuário cliccar ele vai executar o que está definido dentro dele. Ele tem uma função que é um callback um função dentro de outra que executa a função adicionarItem passando o index da paleta que foi clicada

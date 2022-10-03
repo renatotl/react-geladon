@@ -1,4 +1,5 @@
 import "./PaletaListaItem.css";
+import { ActionMode } from "constants/index";
 
 function PaletaListaItem({
   paleta,
@@ -7,6 +8,8 @@ function PaletaListaItem({
   onRemove,
   onAdd,
   clickItem,
+  mode,
+  
 }) {
   /* PROPRIEDADES PARAMETRIZÁVEIS
     FILHO PARA PAI
@@ -45,6 +48,7 @@ function PaletaListaItem({
   const removeButton = (canRender, index) =>
     Boolean(canRender) && (
       <button
+        disabled={mode !== ActionMode.NORMAL}
         className="Acoes__remover"
         onClick={(e) => {
           e.stopPropagation();
@@ -54,13 +58,23 @@ function PaletaListaItem({
         remover
       </button>
     );
+
+
+    // ela renderiza o span com o valor que está no node
+  const badgeAction = (canRender) => {
+    if (canRender)
+      return <span className="PaletaListaItem__tag"> {mode} </span>;
+  };
+
   // o primeiro é o index da paleta selecionada que se refere ao canRnder que dendo valor vira TRUE
   //{badgeCounter(paletaSelecionada[index], index)}
 
   // o primeiro div className="PaletaListaItem sempre que eu clicar em uma paleta vou pegar o id dela que eu quero exibir em tela
   return (
-    <div className="PaletaListaItem" onClick={() => clickItem(paleta.id)}>
+    <div className={`PaletaListaItem ${mode !== ActionMode.NORMAL && 'PaletaListaItem--disable'}`} onClick={() => clickItem(paleta.id)}>
       {badgeCounter(quantidadeSelecionada, index)}
+      {badgeAction(mode !== ActionMode.NORMAL)}
+
       <div>
         <div className="PaletaListaItem__titulo"> {paleta.titulo} </div>
         <div className="PaletaListaItem__preco">
@@ -70,6 +84,7 @@ function PaletaListaItem({
         <div className="PaletaListaItem__descricao"> {paleta.descricao} </div>
         <div className="PaletaListaItem__acoes Acoes">
           <button
+            disabled={mode !== ActionMode.NORMAL}
             className={`Acoes__adicionar ${
               !quantidadeSelecionada && "Acoes__adicionar--preencher"
             }`}
