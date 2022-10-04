@@ -4,8 +4,9 @@ import sacola from "../../assets/icons/sacola.svg";
 import logo from "../../assets/icons/logo.svg";
 //import paleta from "../../assets/icons/paleta.svg";
 //import atualizar from "../../assets/icons/atualizar.svg";
+import deletar from "../../assets/icons/deletar.svg";
 
-function NavBar({ createPaleta, updatePaleta, mode }) {
+function NavBar({ createPaleta, updatePaleta, mode, deletePaleta }) {
   return (
     <div className="Home__header Header">
       {/* o rol é nossa linha com o logo e sacola */}
@@ -20,7 +21,7 @@ function NavBar({ createPaleta, updatePaleta, mode }) {
           <span className="Logo__titulo"> El Geladon </span>
         </div>
         <div className="Header__opcoes Opcoes">
-        <button
+          <button
             type="button"
             className={`Opcoes__paleta Paleta ${
               mode === ActionMode.ATUALIZAR && "Paleta--ativa"
@@ -32,6 +33,20 @@ function NavBar({ createPaleta, updatePaleta, mode }) {
               width="40px"
               className="Paleta__icone"
               alt="Editar paleta"
+            />
+          </button>
+          <button
+            type="button"
+            className={`Opcoes__paleta Paleta ${
+              mode === ActionMode.DELETAR && "Paleta--deletar"
+            }`}
+            onClick={() => deletePaleta()}
+          >
+            <img
+              src={deletar}
+              width="40px"
+              className="Paleta__icone"
+              alt="Deletar paleta"
             />
           </button>
           <button

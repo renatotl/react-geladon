@@ -78,7 +78,9 @@
 
   }
 
-
+  .Paleta--deletar {
+    background: rgba(211, 0, 0);
+  }
   .Paleta--ativa {
     background: rgba(148, 0, 211);
   }

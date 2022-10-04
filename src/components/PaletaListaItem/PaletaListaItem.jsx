@@ -9,7 +9,6 @@ function PaletaListaItem({
   onAdd,
   clickItem,
   mode,
-  
 }) {
   /* PROPRIEDADES PARAMETRIZÁVEIS
     FILHO PARA PAI
@@ -59,11 +58,19 @@ function PaletaListaItem({
       </button>
     );
 
-
-    // ela renderiza o span com o valor que está no node
+  // ela renderiza o span com o valor que está no node
   const badgeAction = (canRender) => {
     if (canRender)
-      return <span className="PaletaListaItem__tag"> {mode} </span>;
+      return (
+        <span
+          className={`PaletaListaItem__tag ${
+            mode === ActionMode.DELETAR && "PaletaListaItem__tag--deletar"
+          }`}
+        >
+          {" "}
+          {mode}{" "}
+        </span>
+      );
   };
 
   // o primeiro é o index da paleta selecionada que se refere ao canRnder que dendo valor vira TRUE
@@ -71,10 +78,16 @@ function PaletaListaItem({
 
   // o primeiro div className="PaletaListaItem sempre que eu clicar em uma paleta vou pegar o id dela que eu quero exibir em tela
   return (
-    <div className={`PaletaListaItem ${mode !== ActionMode.NORMAL && 'PaletaListaItem--disable'}`} onClick={() => clickItem(paleta.id)}>
+    <div
+      className={`
+      PaletaListaItem
+      ${mode !== ActionMode.NORMAL && "PaletaListaItem--disable"}
+      ${mode === ActionMode.DELETAR && "PaletaListaItem--deletar"}
+    `}
+      onClick={() => clickItem(paleta.id)}
+    >
       {badgeCounter(quantidadeSelecionada, index)}
       {badgeAction(mode !== ActionMode.NORMAL)}
-
       <div>
         <div className="PaletaListaItem__titulo"> {paleta.titulo} </div>
         <div className="PaletaListaItem__preco">

@@ -72,7 +72,13 @@
     width: 100%;
 
   }
-  
+  .PaletaListaItem--deletar {
+    box-shadow: 0px 0px 7px rgba(211, 0, 0);
+  }
+
+  .PaletaListaItem__tag--deletar {
+    background-color: red !important;
+  }
   .PaletaListaItem__preco {
     color: darkviolet;
   }
