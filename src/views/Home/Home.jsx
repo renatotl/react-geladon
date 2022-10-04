@@ -6,6 +6,12 @@ import { useState } from "react";
 import { ActionMode } from "constants/index";
 
 function Home() {
+
+
+
+  const [paletaEditada, setPaletaEditada] = useState();
+
+
   // o valor inicial é a ActionMode.NORMAL que foi importada
   const [modoAtual, setModoAtual] = useState(ActionMode.NORMAL);
 
@@ -37,6 +43,8 @@ function Home() {
     setPaletaParaAdicionar();
     setPaletaParaDeletar();
     setPaletaParaEditar();
+    setModoAtual(ActionMode.NORMAL);
+
   };
 
   return (
@@ -52,11 +60,14 @@ function Home() {
           paletaCriada={paletaParaAdicionar}
           deletePaleta={handleDeletePaleta}
           updatePaleta={handleUpdatePaleta}
+          paletaEditada={paletaEditada}
+
         />
         {canShowAdicionaPaletaModal && (
           <AdicionaEditaPaletaModal
             mode={modoAtual}
             paletaToUpdate={paletaParaEditar}
+            onUpdatePaleta={(paleta) => setPaletaEditada(paleta)}
             closeModal={handleCloseModal}
             onCreatePaleta={(paleta) => setPaletaParaAdicionar(paleta)}
           />

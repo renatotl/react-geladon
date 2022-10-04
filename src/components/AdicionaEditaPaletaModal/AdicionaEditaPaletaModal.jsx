@@ -2,15 +2,24 @@ import { useState, useEffect } from "react";
 import Modal from "components/Modal/Modal";
 import "./AdicionaEditaPaletaModal.css";
 import { PaletaService } from "services/PaletaService.js";
+import { ActionMode } from "constants/index";
 
-function AdicionaEditaPaletaModal({ closeModal, onCreatePaleta}) {
+
+function AdicionaEditaPaletaModal({
+  closeModal,
+  onCreatePaleta,
+  mode,
+  paletaToUpdate,
+  onUpdatePaleta,
+}) {
   // nossas propriedades que o cliente vai digitar
   const form = {
-    preco: "",
-    sabor: "",
-    recheio: "",
-    descricao: "",
-    foto: "",
+    //se tiver NULL ou UNDEFINED  minha string ficaráa vazia
+    preco: paletaToUpdate?.preco ?? "",
+    sabor: paletaToUpdate?.sabor ?? "",
+    recheio: paletaToUpdate?.recheio ?? "",
+    descricao: paletaToUpdate?.descricao ?? "",
+    foto: paletaToUpdate?.foto ?? "",
   };
 
   // este state tem relaçõpes com o form
@@ -43,38 +52,62 @@ function AdicionaEditaPaletaModal({ closeModal, onCreatePaleta}) {
     canDisableSendButton();
   });
 
-
-
-  const createPaleta = async () => {
-    const renomeiaCaminhoFoto = (fotoPath) => fotoPath.split('\\').pop();
+  // função que controla o botão enviar
+  const handleSend = async () => {
+    const renomeiaCaminhoFoto = (fotoPath) => fotoPath.split(/\\|\//).pop();
 
     const { sabor, recheio, descricao, preco, foto } = state;
 
-    const titulo = sabor + (recheio && ' com ' + recheio);
+    const titulo = sabor + (recheio && " com " + recheio);
 
     const paleta = {
-        sabor: titulo,
-        descricao,
-        preco,
-        foto: `assets/images/${renomeiaCaminhoFoto(foto)}`
-    }
+      ...(paletaToUpdate && { _id: paletaToUpdate?.id }),
+      sabor: titulo,
+      descricao,
+      preco,
+      foto: `assets/images/${renomeiaCaminhoFoto(foto)}`,
+    };
 
-    const response = await PaletaService.create(paleta);
+    const serviceCall = {
+      //Alteração entre atualizar e normal
+      [ActionMode.NORMAL]: () => PaletaService.create(paleta),
+      [ActionMode.ATUALIZAR]: () =>
+        PaletaService.updtateById(paletaToUpdate?.id, paleta),
+    };
 
-    onCreatePaleta(response);
+    const response = await serviceCall[mode]();
 
+    const actionResponse = {
+      // se for NORMAL ele ele aciona o onCreatePaleta(response)
+      [ActionMode.NORMAL]: () => onCreatePaleta(response),
+      [ActionMode.ATUALIZAR]: () => onUpdatePaleta(response),
+    };
+
+    actionResponse[mode]();
+
+    const reset = {
+      preco: "",
+      sabor: "",
+      recheio: "",
+      descricao: "",
+      foto: "",
+    };
+
+    setState(reset);
 
     closeModal();
-}
-
-
+  };
 
   // o closeModal veio por parâmetro
   return (
     <Modal closeModal={closeModal}>
       <div className="AdicionaPaletaModal">
         <form autoComplete="off">
-          <h2> Adicionar ao Cardápio </h2>
+          <h2>
+            {" "}
+            {ActionMode.ATUALIZAR === mode ? "Atualizar" : "Adicionar ao"}{" "}
+            Cardápio{" "}
+          </h2>
           <div>
             <label className="AdicionaPaletaModal__text" htmlFor="preco">
               {" "}
@@ -142,7 +175,6 @@ function AdicionaEditaPaletaModal({ closeModal, onCreatePaleta}) {
               id="foto"
               type="file"
               accept="image/png, image/gif, image/jpeg"
-              value={state.foto}
               onChange={(e) => handleChange(e, "foto")}
               required
             />
@@ -152,9 +184,9 @@ function AdicionaEditaPaletaModal({ closeModal, onCreatePaleta}) {
             className="AdicionaPaletaModal__enviar"
             type="button"
             disabled={canDisable}
-            onClick={createPaleta}
+            onClick={handleSend}
           >
-            Enviar
+            {ActionMode.NORMAL === mode ? "Enviar" : "Atualizar"} 
           </button>
         </form>
       </div>
@@ -164,8 +196,6 @@ function AdicionaEditaPaletaModal({ closeModal, onCreatePaleta}) {
 
 export default AdicionaEditaPaletaModal;
 
-
 /* Para integrar os sistemas, precisamos enviar os dados do formulário para o endpoint de criação através do service chamando o método create.
 Comece com a criação de uma função assíncrona chamada createPaleta que fará o mapeamento e validação dos dados necessários a serem enviados para a API, a implementação da integração e emissão de fechamento do modal em AdicionaPaletaModal.jsx
 */
-

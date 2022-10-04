@@ -34,13 +34,20 @@ export const PaletaService = {
     fetch(Api.createPaleta(), {
       method: "POST",
       body: JSON.stringify(paleta),
-      mode: "cors",//necessário para o front aceitar
+      mode: "cors", //necessário para o front aceitar
       headers: {
-        "Content-Type": "application/json",// typo de conteúdo enviado para api
+        "Content-Type": "application/json", // typo de conteúdo enviado para api
       },
     }).then(parseTransformItem),
-  updateById: (id) =>
-    fetch(Api.updatePaletaById(id), { method: "PUT" }).then(parseResponse),
+  updtateById: (id, paleta) =>
+    fetch(Api.updatePaletaById(id), {
+      method: "PUT",
+      body: JSON.stringify(paleta),
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(parseResponse),
   deleteById: (id) =>
     fetch(Api.deletePaletaById(id), { method: "DELETE" }).then(parseResponse),
 };

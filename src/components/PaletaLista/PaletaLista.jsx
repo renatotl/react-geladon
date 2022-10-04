@@ -6,7 +6,7 @@ import { PaletaService } from "services/PaletaService";
 import PaletaDetalhesModal from "components/PaletaDetalhesModal/PaletaDetalhesModal";
 import { ActionMode } from "constants/index";
 
-function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta }) {
+function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta, paletaEditada }) {
   const [paletas, setPaletas] = useState([]);
 
   //        valor atual        func que altera a outra         valor inicial um obj vazio
@@ -88,7 +88,7 @@ Note também que há a importação e o uso do hook useCallback. Ele é necessá
   //o primeiro é uma função e o segundo um array vazio para evitar o loop
   useEffect(() => {
     getLista();
-  }, []);
+  }, [paletaEditada]);
 
   /*
 Observe que como segundo parâmetro passamos um array vazio e é importante informar este parâmetro ao useEffect pois sem ele a aplicação entraria em looping infinito, dado que sempre que há uma atualização em um hook de useState que faz alterações no template/ view será acionado o hook de useEffect, que neste caso fará a chamada da requisição de dados para a API e assim por diante
