@@ -8,9 +8,16 @@ const PaletaContext = {
     deletePaletaById: (id) => `${PaletaContext.paletaEndpoint()}/delete-paleta/${id}`,
   };
   
+  const SacolaContext = {
+    getSacola: () => `${PaletaContext.paletaEndpoint()}/all-carrinho`,
+    createSacola: () => `${PaletaContext.paletaEndpoint()}/create-carrinho`,
+    purchase: () => `${PaletaContext.paletaEndpoint()}/finish-carrinho`,
+  }
+    
   export const Api = {
     //baseUrl tem o valor da api no heroku
     baseUrl: "https://api-elgeladon.herokuapp.com",
     // o espred operation pega todos os dados da PaletaContext
     ...PaletaContext,
+    ...SacolaContext,
   };

@@ -4,13 +4,16 @@ import NavBar from "components/NavBar/NavBar.jsx";
 import AdicionaEditaPaletaModal from "components/AdicionaEditaPaletaModal/AdicionaEditaPaletaModal";
 import { useState } from "react";
 import { ActionMode } from "constants/index";
+import DeletaPaletaModal from "components/DeletaPaletaModal/DeletaPaletaModal";
+import SacolaModal from "components/SacolaModal/SacolaModal";
+import { SacolaService } from "services/SacolaService";
 
 function Home() {
+  const [canOpenBag, setCanOpenBag] = useState();
 
-
+  const [paletaRemovida, setPaletaRemovida] = useState();
 
   const [paletaEditada, setPaletaEditada] = useState();
-
 
   // o valor inicial é a ActionMode.NORMAL que foi importada
   const [modoAtual, setModoAtual] = useState(ActionMode.NORMAL);
@@ -44,7 +47,15 @@ function Home() {
     setPaletaParaDeletar();
     setPaletaParaEditar();
     setModoAtual(ActionMode.NORMAL);
+  };
 
+  const abrirSacola = async () => {
+    const lista = JSON.parse(localStorage.getItem("sacola"));
+    const sacola = lista.filter((i) => i.quantidade > 0);
+
+    await SacolaService.create(sacola);
+
+    setCanOpenBag(true);
   };
 
   return (
@@ -54,7 +65,7 @@ function Home() {
         createPaleta={() => setCanShowAdicionaPaletaModal(true)}
         updatePaleta={() => handleActions(ActionMode.ATUALIZAR)}
         deletePaleta={() => handleActions(ActionMode.DELETAR)}
-
+        openBag={abrirSacola}
       />
       <div className="Home__container">
         <PaletaLista
@@ -63,7 +74,7 @@ function Home() {
           deletePaleta={handleDeletePaleta}
           updatePaleta={handleUpdatePaleta}
           paletaEditada={paletaEditada}
-
+          paletaRemovida={paletaRemovida}
         />
         {canShowAdicionaPaletaModal && (
           <AdicionaEditaPaletaModal
@@ -74,6 +85,14 @@ function Home() {
             onCreatePaleta={(paleta) => setPaletaParaAdicionar(paleta)}
           />
         )}
+        {paletaParaDeletar && (
+          <DeletaPaletaModal
+            paletaParaDeletar={paletaParaDeletar}
+            closeModal={handleCloseModal}
+            onDeletePaleta={(paleta) => setPaletaRemovida(paleta)}
+          />
+        )}
+        {canOpenBag && <SacolaModal closeModal={() => setCanOpenBag(false)} />}
       </div>
     </div>
   );

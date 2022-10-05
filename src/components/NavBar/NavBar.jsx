@@ -6,7 +6,7 @@ import logo from "../../assets/icons/logo.svg";
 //import atualizar from "../../assets/icons/atualizar.svg";
 import deletar from "../../assets/icons/deletar.svg";
 
-function NavBar({ createPaleta, updatePaleta, mode, deletePaleta }) {
+function NavBar({ createPaleta, updatePaleta, mode, deletePaleta, openBag }) {
   return (
     <div className="Home__header Header">
       {/* o rol é nossa linha com o logo e sacola */}
@@ -56,7 +56,7 @@ function NavBar({ createPaleta, updatePaleta, mode, deletePaleta }) {
           >
             <img width="40px" className="Paleta__icone" alt="Adiconar paleta" />
           </button>
-          <div className="Opcoes__sacola Sacola">
+          <div className="Opcoes__sacola Sacola" onClick={openBag}>
             <img
               src={sacola}
               width="40px"

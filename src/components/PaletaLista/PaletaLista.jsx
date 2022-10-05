@@ -6,11 +6,17 @@ import { PaletaService } from "services/PaletaService";
 import PaletaDetalhesModal from "components/PaletaDetalhesModal/PaletaDetalhesModal";
 import { ActionMode } from "constants/index";
 
-function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta, paletaEditada }) {
+function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta, paletaEditada, paletaRemovida }) {
+
+// se eu precisar usar uma informação do próprio localstore eu uso o getItem
+  const selecionadas = JSON.parse(localStorage.getItem('selecionadas')) ?? {};
+
+
+
   const [paletas, setPaletas] = useState([]);
 
   //        valor atual        func que altera a outra         valor inicial um obj vazio
-  const [paletaSelecionada, setPaletaSelecionada] = useState({});
+  const [paletaSelecionada, setPaletaSelecionada] = useState(selecionadas);
 
   const [paletaModal, setPaletaModal] = useState(false);
 
@@ -34,6 +40,27 @@ function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta, paletaEdi
     // primeiro é o valor atual o segunda vai substiruir ele
     setPaletaSelecionada({ ...paletaSelecionada, ...paleta });
   };
+
+
+
+
+
+  const setSelecionadas = useCallback(() => {
+    if(!paletas.length) return
+
+    const entries = Object.entries(paletaSelecionada);
+    const sacola = entries.map(arr => ({
+      paletaId: paletas[arr[0]].id,
+      quantidade: arr[1]
+    }))
+
+    localStorage.setItem('sacola', JSON.stringify(sacola))
+    localStorage.setItem('selecionadas', JSON.stringify(paletaSelecionada))
+  }, [ paletaSelecionada, paletas ])
+
+
+
+
 
   const removerItem = (paletaIndex) => {
     const paleta = {
@@ -73,7 +100,13 @@ Note também que há a importação e o uso do hook useCallback. Ele é necessá
     },
     [paletas]
   );
+  useEffect(() => {
+    setSelecionadas();
+  }, [ setSelecionadas, paletaSelecionada ]);
 
+
+
+  
   useEffect(() => {
     if (
       paletaCriada &&
@@ -88,7 +121,7 @@ Note também que há a importação e o uso do hook useCallback. Ele é necessá
   //o primeiro é uma função e o segundo um array vazio para evitar o loop
   useEffect(() => {
     getLista();
-  }, [paletaEditada]);
+  }, [paletaEditada, paletaRemovida]);
 
   /*
 Observe que como segundo parâmetro passamos um array vazio e é importante informar este parâmetro ao useEffect pois sem ele a aplicação entraria em looping infinito, dado que sempre que há uma atualização em um hook de useState que faz alterações no template/ view será acionado o hook de useEffect, que neste caso fará a chamada da requisição de dados para a API e assim por diante

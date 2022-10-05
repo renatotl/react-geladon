@@ -3,6 +3,8 @@ import { Api } from "helpers/Api";
 //pega toda resposta da requisiçã do backend vai ser convertida em json
 const parseResponse = (response) => response.json();
 
+
+
 // recebe um parametro paleta
 const transformPaleta = (paleta) => {
   // a função spilt quebra um string ele é chamada dividir
