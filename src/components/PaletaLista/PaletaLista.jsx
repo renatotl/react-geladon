@@ -5,8 +5,14 @@ import { useState, useEffect, useCallback } from "react";
 import { PaletaService } from "services/PaletaService";
 import PaletaDetalhesModal from "components/PaletaDetalhesModal/PaletaDetalhesModal";
 import { ActionMode } from "constants/index";
+import { matchByText } from "helpers/utils";
+
 
 function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta, paletaEditada, paletaRemovida }) {
+
+
+// hook para paletas filtradas 
+  const [paletasFiltradas, setPaletasFiltradas] = useState([]);
 
 // se eu precisar usar uma informação do próprio localstore eu uso o getItem
   const selecionadas = JSON.parse(localStorage.getItem('selecionadas')) ?? {};
@@ -100,6 +106,14 @@ Note também que há a importação e o uso do hook useCallback. Ele é necessá
     },
     [paletas]
   );
+
+// ela recebe o target que é um elemento html um input
+  const filtroPorTitulo = ({target}) => {
+    // passando todas as paletas para lista e depois fazendo ul filtro pelo título e depois aciona a função matchByText passando o título e vai comparar com o título digitado no campo
+    const lista = [...paletas].filter(({titulo}) => matchByText(titulo, target.value))
+    setPaletasFiltradas(lista);
+  }
+
   useEffect(() => {
     setSelecionadas();
   }, [ setSelecionadas, paletaSelecionada ]);
@@ -114,6 +128,8 @@ Note também que há a importação e o uso do hook useCallback. Ele é necessá
     ) {
       adicionaPaletaNaLista(paletaCriada);
     }
+    setPaletasFiltradas(paletas)
+
   }, [adicionaPaletaNaLista, paletaCriada, paletas]);
 
   // algum acoisa tem que invocar este função
@@ -128,27 +144,30 @@ Observe que como segundo parâmetro passamos um array vazio e é importante info
 */
 
   return (
+   <div className="PaletaLista-wrapper">
+    <input 
+    className="PaletaLista-filtro"
+    onChange={filtroPorTitulo}
+    placeholder="Busque uma palete pelo título">
+    </input>
     <div className="PaletaLista">
-      {paletas.map((paleta, index) => (
-        //adicionamos a nossa key
-        <PaletaListaItem
-          mode={mode}
-          key={`PaletaListaItem-${index}`}
-          paleta={paleta}
-          quantidadeSelecionada={paletaSelecionada[index]}
-          index={index}
-          onAdd={(index) => adicionarItem(index)}
-          onRemove={(index) => removerItem(index)}
-          clickItem={(paletaId) => getPaletaById(paletaId)}
-        />
-      ))}
-      {paletaModal && (
-        <PaletaDetalhesModal
-          paleta={paletaModal}
-          closeModal={() => setPaletaModal(false)}
-        />
-      )}
+      {
+        paletasFiltradas.map((paleta, index) =>
+          <PaletaListaItem
+            mode={mode}
+            key={`PaletaListaItem-${index}`}
+            paleta={paleta}
+            quantidadeSelecionada={paletaSelecionada[index]}
+            index={index}
+            onAdd={index => adicionarItem(index)}
+            onRemove={index => removerItem(index)}
+            clickItem={(paletaId) => getPaletaById(paletaId)} />
+        )
+      }
+
+      {paletaModal && <PaletaDetalhesModal paleta={paletaModal} closeModal={() => setPaletaModal(false)} />}
     </div>
+   </div>
   );
 }
 
@@ -192,3 +211,31 @@ Daremos início com os badges, que não devem renderizar quando zerados, mas sim
 Iniciando com a criação de uma função chamada badgeCounter que recebe dois parâmetros, sendo o primeiro a condição de renderização, que vamos chamá-la canRender.
 O segundo parâmetro é o index, representando o número do item que está sendo selecionado (onde será renderizado o contador).
 Assim há uma verificação: quando o canRender for true o operador && renderiza o badge naquele index. Caso o canRender seja false o operador && também torna a renderização falsa, portanto não aparece na tela*/
+
+
+
+
+/* ANTIGO
+<div className="PaletaLista">
+{paletas.map((paleta, index) => (
+  //adicionamos a nossa key
+  <PaletaListaItem
+    mode={mode}
+    key={`PaletaListaItem-${index}`}
+    paleta={paleta}
+    quantidadeSelecionada={paletaSelecionada[index]}
+    index={index}
+    onAdd={(index) => adicionarItem(index)}
+    onRemove={(index) => removerItem(index)}
+    clickItem={(paletaId) => getPaletaById(paletaId)}
+  />
+))}
+{paletaModal && (
+  <PaletaDetalhesModal
+    paleta={paletaModal}
+    closeModal={() => setPaletaModal(false)}
+  />
+)}
+</div>    
+
+*/
